@@ -1,0 +1,259 @@
+﻿<Window x:Class="QBasket_demo.OutputFormatWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:QBasket_demo"
+        mc:Ignorable="d"
+        Title="Q Basket"
+        Name="QBasketFormatWin"
+        Closing="QBasketFormatWin_Closing"
+        
+        Background="#DFEBF4"
+        FontFamily="Montserrat"
+        FontSize="10"
+        
+        WindowStyle="SingleBorderWindow"
+        WindowStartupLocation="CenterScreen"
+        SizeToContent="WidthAndHeight">
+
+    <Window.Resources>
+
+        <Color x:Key="QuarticNavy"
+               R="12" G="48" B="124" />
+        <!-- #0C307C -->
+        <Color x:Key="QuarticSky"
+               R="146" G="191" B="225" />
+        <!-- #92BFE1 -->
+        <Color x:Key="QuarticIce"
+               R="223" G="235" B="244" />
+        <!-- #DFEBF4 -->
+        <Color x:Key="QuarticGrey"
+               R="234"  G="234" B="234"/>
+        <!-- #EAEAEA -->
+
+        <!-- Styles used across all windows -->
+        <Style x:Key="BlueTextbox"
+               TargetType="TextBox">
+            <Setter Property="BorderBrush"
+                    Value="#0C307C" />
+            <Setter Property="BorderThickness"
+                    Value="1" />
+            <Setter Property="Height"
+                    Value="20" />
+            <Setter Property="Width"
+                    Value="75" />
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Right" />
+            <Setter Property="VerticalContentAlignment"
+                    Value="Center" />
+        </Style>
+        <Style x:Key="BlueCB"
+               TargetType="CheckBox">
+            <Setter Property="BorderBrush"
+                    Value="#0C307C" />
+            <Setter Property="BorderThickness"
+                    Value="1" />
+            <Setter Property="Height"
+                    Value="15" />
+            <Setter Property="Width"
+                    Value="15" />
+        </Style>
+        <Style x:Key="BlueBorder"
+               TargetType="Border">
+            <Setter Property="BorderBrush"
+                    Value="#0C307C" />
+            <Setter Property="BorderThickness"
+                    Value="1" />
+            <Setter Property="Background"
+                    Value="#DFEBF4" />
+        </Style>
+        <Style TargetType="DatePickerTextBox">
+            <Setter Property="VerticalAlignment"
+                    Value="Center" />
+            <Setter Property="Padding"
+                    Value="2" />
+        </Style>
+        <Style x:Key="BlueLine"
+               TargetType="Line">
+            <Setter Property="Stroke"
+                    Value="#0C307C" />
+            <Setter Property="StrokeThickness"
+                    Value="1" />
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Padding"
+                    Value="2" />
+            <Setter Property="FontSize"
+                    Value="9" />
+            <Setter Property="HorizontalAlignment"
+                    Value="Center" />
+            <Setter Property="BorderBrush"
+                    Value="#0C307C" />
+            <Setter Property="BorderThickness"
+                    Value="1.0" />
+            <Setter Property="Background"
+                    Value="#EAEAEA"/>
+        </Style>
+
+        <Style x:Key="ElementText"
+            TargetType="TextBlock">
+            <Setter Property="VerticalAlignment"
+                Value="Center" />
+            <Setter Property="Padding"
+                    Value="3" />
+            <Setter Property="Margin"
+                Value="5,0" />
+            <Setter Property="Height"
+                Value="20" />
+            <Setter Property="FontWeight"
+                Value="Normal" />
+            <Setter Property="Background"
+                Value="White" />
+        </Style>
+        <Style x:Key="TitleLabel"
+            TargetType="Label">
+            <Setter Property="FontWeight"
+                Value="SemiBold" />
+            <Setter Property="FontSize"
+                Value="11" />
+            <Setter Property ="Background"
+                Value="#0C307C" />
+            <Setter Property ="Foreground"
+                Value="White" />
+            <Setter Property="VerticalAlignment"
+                Value="Top" />
+        </Style>
+        <Style x:Key="PanelLabel"
+            TargetType="Label">
+            <Setter Property="FontWeight"
+                    Value="SemiBold" />
+            <Setter Property="FontSize"
+                    Value="11" />
+        </Style>
+        <Style x:Key="ElementLabel"
+            TargetType="Label">
+            <Setter Property="VerticalAlignment"
+                Value="Center" />
+            <Setter Property="FontSize"
+                Value="10" />
+        </Style>
+    </Window.Resources>
+
+    <Grid x:Name="BaseGrid"
+          Width="375"  MaxWidth="375"
+          Height="Auto" MaxHeight="350">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="25" MaxWidth="25" />
+            <ColumnDefinition Width="341.274" MaxWidth="350" />
+            <ColumnDefinition Width="8.726"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25" MaxHeight="25" />
+            <RowDefinition Height="25" MaxHeight="25" />
+            <RowDefinition Height="25" MaxHeight="25" />
+            <RowDefinition Height="15" MaxHeight="15" />
+            <RowDefinition Height="25" MaxHeight="25" />
+            <RowDefinition Height="30" MaxHeight="30" />
+            <RowDefinition Height="15" MaxHeight="15" />
+            <RowDefinition Height="50" MaxHeight="50" />
+            <RowDefinition Height="25" MaxHeight="25" />
+        </Grid.RowDefinitions>
+
+        <!-- Row 0 - Title bar -->
+        <Label x:Name="formatTitle"
+               Style="{StaticResource TitleLabel}"
+               VerticalAlignment="Center"
+               Grid.Column="0"
+               Grid.ColumnSpan="3">
+            SELECT DOWNLOAD LOCATION
+        </Label>
+
+        <!-- Row 1 - Local Label  -->
+        <Label Style="{StaticResource ElementLabel}"
+               Grid.Column="0"
+               Grid.ColumnSpan="2"
+               VerticalAlignment="Bottom"
+               Grid.Row="1"
+               HorizontalAlignment="Left">
+            Local Directory Options
+        </Label>
+
+        <!-- Row 2 - Local Image file -->
+        <RadioButton x:Name="imageFileRB"
+                     HorizontalAlignment="Left"
+                     VerticalAlignment="Center"
+                     Grid.Column="0"
+                     Grid.Row="2"
+                     IsChecked="True"
+                     GroupName="FormatOptions" Margin="10,0,0,0"/>
+
+        <Label Style="{StaticResource ElementLabel}"
+               Grid.Column="1"
+               Grid.Row="2"
+               HorizontalAlignment="Left">
+            Geotiff image
+        </Label>
+
+
+        <!-- Row 4  AGOL Label -->
+        <Label Style="{StaticResource ElementLabel}"
+               Grid.Column="0"
+               Grid.ColumnSpan="2"
+               Grid.Row="4"
+               VerticalAlignment="Bottom"
+               HorizontalAlignment="Left">
+            ArcGIS Online Options (requires an ArcGIS Online Account)
+        </Label>
+
+        
+        <!-- Row 5  Save as KMZ File -->
+        <RadioButton x:Name="KMZ_file"
+                     HorizontalAlignment="Left"
+                     VerticalAlignment="Center"
+                     Grid.Column="0"
+                     Grid.Row="5"
+                     GroupName="FormatOptions" 
+                     Margin="10,0,0,0"/>
+
+        <Label Style="{StaticResource ElementLabel}"
+               Grid.Column="1"
+               Grid.Row="5"
+               HorizontalAlignment="Left">
+            KMZ File
+        </Label>
+        
+
+        <!-- Row 7 - Buttons -->
+        <StackPanel Orientation="Horizontal"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Left"
+                    Grid.Column="1"
+                    Grid.Row="7" Margin="74,0,0,0">
+            <Button x:Name ="ContinueBtn"
+                    Margin="10"
+                    Content="Download"
+                    Click="DownloadBtn_Click"/>
+            <Button x:Name ="CancelBtn"
+                    Margin="10"
+                    Content="Cancel"
+                    Click="CancelBtn_Click"/>
+            <Button x:Name ="ExitBtn" 
+                    Content="   Quit   "
+                    Margin="10"
+                    Click="ExitBtn_Click"/>
+        </StackPanel>
+
+        <!-- Row 8 -Quartic logo -->
+        <Image Source="QSolutions_small.png" 
+               Visibility="Visible"
+               Height="24"
+               Margin="267,0,0,0"
+               Grid.Column="1"
+               Grid.Row="8"
+               Grid.ColumnSpan="2"
+               HorizontalAlignment="Left"
+               VerticalAlignment="Center"/>
+    </Grid>
+</Window>
