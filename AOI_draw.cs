@@ -20,7 +20,6 @@ using Esri.ArcGISRuntime.Geometry;
 using Esri.ArcGISRuntime.Ogc;
 using Esri.ArcGISRuntime.Symbology;
 using Esri.ArcGISRuntime.UI;
-using qWPF_lib;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

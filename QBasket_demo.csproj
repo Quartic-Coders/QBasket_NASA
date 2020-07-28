@@ -35,12 +35,14 @@
     <Compile Remove="AOI_classSave.cs" />
     <Compile Remove="AOI_draw - Copy.cs" />
     <Compile Remove="AOI_draw Save.cs" />
+    <Compile Remove="AOI_draw.cs" />
     <Compile Remove="AOI_draw_new.cs" />
     <Compile Remove="AOI_Panel.xaml.cs" />
     <Compile Remove="ChildWindow.xaml.cs" />
     <Compile Remove="DownloadPanel.xaml.cs" />
     <Compile Remove="Interactivity.cs" />
     <Compile Remove="IReadOnlyList.cs" />
+    <Compile Remove="OutputFormatWindow.xaml.cs" />
     <Compile Remove="ProgressBarWindow.xaml.cs" />
     <Compile Remove="WMTS_Window.xaml.cs" />
   </ItemGroup>
@@ -50,6 +52,7 @@
     <None Remove="LandSurfaceReflectance_products.csv" />
     <None Remove="ProductList.csv" />
     <None Remove="QBasketDemo.zip" />
+    <None Remove="qLib.dll" />
     <None Remove="QSolutions.png" />
     <None Remove="QSolutions_small.png" />
     <None Remove="quartic-black.png" />
@@ -59,12 +62,14 @@
     <None Remove="quatricLogoOld.ico" />
     <None Remove="Quatric_thumbnail.jpg" />
     <None Remove="Quatric_thumbnail.png" />
+    <None Remove="qWPF_lib.dll" />
   </ItemGroup>
 
   <ItemGroup>
     <Page Remove="AOI_Panel.xaml" />
     <Page Remove="ChildWindow.xaml" />
     <Page Remove="DownloadPanel.xaml" />
+    <Page Remove="OutputFormatWindow.xaml" />
     <Page Remove="ProgressBarWindow.xaml" />
     <Page Remove="WMTS_Window.xaml" />
   </ItemGroup>
