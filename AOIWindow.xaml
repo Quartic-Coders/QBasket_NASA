@@ -13,12 +13,12 @@
         Background="#DFEBF4"
         FontFamily="Montserrat"
         FontSize="10"
-        
-        WindowStartupLocation="CenterScreen"
+        Width="365"
+        Height="540"
+        WindowStartupLocation="Manual"
         WindowStyle="SingleBorderWindow"
         MinWidth="250"
-        ResizeMode="NoResize"
-        SizeToContent="WidthAndHeight">
+        ResizeMode="NoResize">
 
     <!-- Margin : L T (R B) -->
     <Window.Resources>
@@ -154,21 +154,21 @@
     <!-- Base window grid -->
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="150" />
-            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="183" />
+            <ColumnDefinition Width="182" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
 
         </Grid.RowDefinitions>
 
@@ -178,29 +178,44 @@
                Style="{StaticResource TitleLabel}"
                Content="Area of Interest" />
 
-        <!-- Row 1 - Imagery title -->
-        <ComboBox x:Name="ImageryTitle"
-                  Grid.Row="1" Grid.Column="0"
-                  Grid.ColumnSpan="2"
-                  MinWidth="100"
-                  SelectedIndex="0"
-                  Height="35"
-                  FontWeight="SemiBold"
-                  Margin="5,5,5,15"
-                  VerticalContentAlignment="Top"
-                  HorizontalAlignment="Stretch"
-                  SelectionChanged="ImageryTitle_SelectionChanged">
-            <ComboBox.ItemTemplate>
-                <DataTemplate DataType="wmts.layerTileSets">
-                    <TextBlock Text="{Binding}"
-                               MinWidth="100" />
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
+        <!-- Row 1 - Imagery titles -->
+        <Grid Grid.Row="1" Grid.Column="0"
+              Grid.ColumnSpan="2"
+              Margin="5,10,5,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="75"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label Style="{StaticResource PanelLabel}"
+                   Content="Select Image"
+                   Grid.Column="0"
+                   VerticalAlignment="Center"/>
+            <ComboBox x:Name="ImageryTitle"
+                      Grid.Column="1"
+                      Width="250"
+                      SelectedIndex="0"
+                      Height="35"
+                      FontWeight="SemiBold"
 
-        <!-- Row 2 - Extent panel -->
-        <Grid Grid.Row="2" Grid.Column="0"
-              Grid.ColumnSpan="2">
+                      VerticalContentAlignment="Top"
+                      VerticalAlignment="Center"
+                      HorizontalAlignment="Stretch"
+                      Margin="0,0,25,0"
+                      SelectionChanged="ImageryTitle_SelectionChanged">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate DataType="wmts.layerTileSets">
+                        <TextBlock Text="{Binding}"
+                                   FontSize="9"
+                                   MinWidth="100" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </Grid>
+
+        <!-- Row 5 - Extent panel -->
+        <Grid Grid.Row="5" Grid.Column="0"
+              Grid.ColumnSpan="2"
+              Margin="0,15">
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="50" />
@@ -220,194 +235,231 @@
                      Style="{StaticResource BlueTextbox}"
                      Margin="0,5,5,0"
                      SelectionChanged="Extent_Changed"
-                     Grid.Row="0" Grid.Column="1">
-               -90.0
-            </TextBox>
+                     Grid.Row="0" Grid.Column="1"
+                     Text="-90.0"/>
             <TextBox x:Name="MaxLat"
                      Margin="0,5,5,0"
                      Style="{StaticResource BlueTextbox}"
                      SelectionChanged="Extent_Changed"
-                     Grid.Row="0" Grid.Column="2">
-                90.0
-            </TextBox>
+                     Grid.Row="0" Grid.Column="2"
+                     HorizontalAlignment="Left"
+                     Text="90.0"/>
             <TextBox x:Name="MinLon"
                      Margin="0,5,5,0"
                      SelectionChanged="Extent_Changed"
                      Style="{StaticResource BlueTextbox}"
-                     Grid.Row="1" Grid.Column="1">
-                -180.0
-            </TextBox>
+                     Grid.Row="1" Grid.Column="1"
+                     Text="-180.0"/>
             <TextBox x:Name="MaxLon"
                      Margin="0,5,5,0"
                      Style="{StaticResource BlueTextbox}"
                      SelectionChanged="Extent_Changed"
-                     Grid.Row="1" Grid.Column="2">
-                180.0
-            </TextBox>
+                     Grid.Row="1" Grid.Column="2"
+                     HorizontalAlignment="Left"
+                     Text="180.0"/>
         </Grid>
 
-        <!-- Row 3 Date Panel -->
-        <StackPanel Grid.Row="3" Grid.Column="0"
+        <!-- Row 6 Date Picker -->
+        <StackPanel Grid.Row="6" Grid.Column="0"
                     Grid.ColumnSpan="2"
-                    Orientation="Horizontal">
-
-            <Label Content="Date"
-                Style="{StaticResource PanelLabel}" />
-            <TextBox x:Name="Date"
-                     Margin="5,5,0,10"
-                     HorizontalAlignment="Right"
-                     Style="{StaticResource BlueTextbox}">
-                01/01/2019
-            </TextBox>
+                    Margin="0,15,0,25"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center">
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center">
+                <Label Content="Date"
+                       Style="{StaticResource PanelLabel}"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"/>
+                <Label Style="{StaticResource ElementLabel}"
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        VerticalAlignment="Center"
+                        HorizontalContentAlignment="Right"
+                        Content="(mm/dd/yyyy)">
+                </Label>
         </StackPanel>
 
-        <!-- Row 4- Resolution list selection -->
-        <Label Content="Zoom Level"
-               Grid.Row="4" Grid.Column="0"
+        <DatePicker x:Name="AOI_Date"
+                    VerticalAlignment="Center"
+                    SelectedDate="01/01/2020"
+                    DisplayDateStart="01/01/2010"
+                    SelectedDateChanged="AOI_SelectedDateChanged">
+            </DatePicker>
+        </StackPanel>
+
+        <!-- Row 2- Resolution list selection -->
+        <Grid Grid.Row="2" Grid.Column="0"
+              Grid.ColumnSpan="2"
+              Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="75"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Content="Resolution"
+               Grid.Row="2" Grid.Column="0"
                HorizontalAlignment="Right"
                VerticalAlignment="Center"
                Style="{StaticResource PanelLabel}"
                Margin="5,0" />
 
-        <ComboBox x:Name="ZoomCombo"
+            <ComboBox x:Name="ZoomCombo"
                   ItemsSource="{Binding}"
-                  Grid.Row="4" Grid.Column="1"
+                  Grid.Row="2" Grid.Column="1"
                   Width="115"
+                  Height="25"
                   Margin="5"
+                  VerticalContentAlignment="Center"
                   SelectedIndex="1"
                   SelectionChanged="Zoom_SelectionChanged"
                   HorizontalAlignment="Left">
                 <ComboBox.ItemTemplate>
                     <DataTemplate DataType="layerTileSets">
-                    <TextBlock Text="{Binding}"
+                        <TextBlock Text="{Binding}"
                                Width="115"/>
-                </DataTemplate>
+                    </DataTemplate>
                 </ComboBox.ItemTemplate>
-        </ComboBox>
+            </ComboBox>
+        </Grid>
 
-        <!-- Row 5 - Format list selection -->
- <!--       <Label Content="Format"
-                Grid.Row="5" Grid.Column="0"
-                Style="{StaticResource PanelLabel}"
-                HorizontalAlignment="Right"
-               VerticalAlignment="Center"
-                Margin="5,0" />
-
-        <ComboBox x:Name="FormatCombo"
-                  Grid.Row="5" Grid.Column="1"
-                  Margin="5"
-                  Width ="75"
-                  SelectedValue="GeoTiff"
-                  SelectedIndex="0"
-                  HorizontalAlignment="Left">
-            <ComboBoxItem Content="GeoTiff" />
-        </ComboBox>
--->
-
-        <!-- Row 6, column 0 - Raw Size -->
-        <StackPanel Grid.Row="6" Grid.Column="0"
+        <!-- Row 3, Column 0 - File Size -->
+        <StackPanel Grid.Row="3" Grid.Column="0"
                     Orientation="Vertical"
+                    Margin="0,10,0,0"
                     HorizontalAlignment="Center">
-            <Label Content="Raw Size"
-                   Style="{StaticResource PanelLabel}" />
+            <Label Content="File Size"
+                   Style="{StaticResource PanelLabel}"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"/>
             <TextBlock x:Name="RawSizeText"
-                       HorizontalAlignment="Center">
-                125MB
-            </TextBlock>
+                       HorizontalAlignment="Center"
+                       Text="0 MB"/>
         </StackPanel>
 
-        <!-- Row 6 - Column 1 - Max Size -->
-        <StackPanel Grid.Row="6" Grid.Column="1"
+        <!-- Row 3, Column 1 - Min Pixel Size -->
+        <StackPanel Grid.Row="3" Grid.Column="1"
                     Orientation="Vertical"
+                    Margin="0,10,0,0"
                     HorizontalAlignment="Center">
-            <Label Content="Minimum/Maximum"
-               Style="{StaticResource PanelLabel}"
-               HorizontalAlignment="Center" 
-               VerticalAlignment="Center"/>
+            <Label Content="Minimum Pixel Size"
+                   Style="{StaticResource PanelLabel}"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"/>
             <TextBlock x:Name="MinPixelSizeText"
                    HorizontalAlignment="Center"
-                   VerticalAlignment="Center">
-               64 px x 64 px
+                   VerticalAlignment="Center"
+                   Text="64 px x 64 px">
             </TextBlock>
         </StackPanel>
 
-
-        <!-- Row 7, column 0 - Pixel W x H  -->
-        <TextBlock x:Name="PixelSize"
-                   Grid.Row="7" Grid.Column="0"
-                   Margin="0,5"
+        <!-- Row 4, column 0 - Current Pixel Size -->
+        <StackPanel Grid.Row="4" Grid.Column="0"
+                    Orientation="Vertical"
+                    Margin="0,5,0,0"
+                    HorizontalAlignment="Center">
+            <Label Content="Current Pixel Size"
+                   Style="{StaticResource PanelLabel}"
                    HorizontalAlignment="Center"
-                   VerticalAlignment="Center">
-               600 px x 600 px
-        </TextBlock>
-        <TextBlock x:Name="MaxPixelSizeText"
-                   Grid.Row="7" Grid.Column="1"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center">
-               8200 px x 8200 px
-        </TextBlock>
+                   VerticalAlignment="Center"/>
+            <TextBlock x:Name="PixelSize"
+                       Margin="0,0,0,5"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Text= "600 px x 600 px"/>
+        </StackPanel>
 
-        <!-- Row 9 - Save/download buttons -->
-        <!-- Save CheckBox -->
-        <Button x:Name ="ItemSaveBtn"
-                Grid.Row="8"
+        <!-- Row 4, column 1 - Max Pixel Size -->
+        <StackPanel Grid.Row="4" Grid.Column="1"
+                    Orientation="Vertical"
+                    Margin="0,5,0,0"
+                    HorizontalAlignment="Center">
+            <Label Content="Maximum Pixel Size"
+                   Style="{StaticResource PanelLabel}"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"/>
+            <TextBlock x:Name="MaxPixelSizeText"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Text="8200 px x 8200 px"/>
+        </StackPanel>
+
+
+        <!-- Row 8 - Save/download/back buttons -->
+        <Grid   Grid.Row="8"
                 Grid.Column="0"
-                HorizontalAlignment="Center"
+                Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+        <Button x:Name ="ItemSaveBtn"
+                Grid.Column="0"
+                HorizontalAlignment="Right"
                 VerticalAlignment="Center"
-                Margin="5"
+                Margin="5,10"
+                Height="25"
                 Width="70"
                 ToolTipService.PlacementRectangle="10,10,50,50"
                 ToolTipService.Placement="Left"
                 ToolTipService.HasDropShadow="True"
                 ToolTipService.ToolTip="Add this tile set to shopping cart"
-                Content="Save to Cart" 
+                Content="Save to Cart"
                 Click="ItemSaveBtn_Click"/>
 
         <Button x:Name="CheckoutBtn"
                 Click="CheckoutBtn_Click"
-                Grid.Row="8"
                 Grid.Column="1"
                 Content="Review Cart"
+                HorizontalAlignment="Center"
                 VerticalAlignment="Center"
+                Height="25"
                 Width="70"
-                Margin="5"
+                Margin="5,10"
                 IsEnabled="False"
                 ToolTipService.PlacementRectangle="10,10,50,50"
                 ToolTipService.Placement="Left"
                 ToolTipService.HasDropShadow="True"
                 ToolTipService.ToolTip="Verify and download selections" />
 
-        <!-- Row 9 - BackToLayers/exit buttons -->
         <Button x:Name="ReturnBtn"
                 Click="ReturnBtn_Click"
-                Grid.Row="9"
-                Grid.Column="0"
-                Margin="5"
+                Grid.Column="2"
+                Margin="5,10"
+                Height="25"
                 Width="70"
-                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Left"
                 ToolTipService.PlacementRectangle="10,10,50,50"
                 ToolTipService.Placement="Left"
                 ToolTipService.HasDropShadow="True"
                 ToolTipService.ToolTip="Return to Layer selection window"
-                Content="Return" />
-
+                Content="Back" />
+        </Grid>
+        
+        <!-- Row 9 - Quit/Exit button -->
         <Button x:Name="ExitBtn"
                 Click="ExitBtn_Click"
                 Grid.Row="9"
-                Grid.Column="1"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
                 Width="70"
-                Margin="5"
-                HorizontalAlignment="Center"
+                Height="25"
+                Margin="5,0,46.75,0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
                 ToolTipService.PlacementRectangle="10,10,50,50"
                 ToolTipService.Placement="Left"
                 ToolTipService.HasDropShadow="True"
                 ToolTipService.ToolTip="Exit QBasket Demo"
-                Content="Quit" />
+                Content="Exit" />
 
         <!-- Row 10 - Quartic Logo -->
-                <Image Source="QSolutions_small.png"
-                       Margin="0,5,5,5"
-                       Visibility="Visible"
+        <Image Source="QSolutions_small.png"
+                       Margin="0,30,10,5"
+                       Visibility="Collapsed"
                        Height="24"
                        Grid.Row="10"
                        Grid.Column="1"

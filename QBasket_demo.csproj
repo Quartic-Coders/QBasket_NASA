@@ -11,13 +11,22 @@
     <Configurations>Debug;Release;QBasket_Nasa</Configurations>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
+    <Compile Remove="Properties\PublishProfiles\**" />
     <Compile Remove="Save\**" />
     <Compile Remove="_Publish\**" />
+    <EmbeddedResource Remove="Properties\PublishProfiles\**" />
     <EmbeddedResource Remove="Save\**" />
     <EmbeddedResource Remove="_Publish\**" />
+    <None Remove="Properties\PublishProfiles\**" />
     <None Remove="Save\**" />
     <None Remove="_Publish\**" />
+    <Page Remove="Properties\PublishProfiles\**" />
     <Page Remove="Save\**" />
     <Page Remove="_Publish\**" />
   </ItemGroup>
@@ -26,9 +35,15 @@
     <Compile Remove="AOI_classSave.cs" />
     <Compile Remove="AOI_draw - Copy.cs" />
     <Compile Remove="AOI_draw Save.cs" />
+    <Compile Remove="AOI_draw.cs" />
     <Compile Remove="AOI_draw_new.cs" />
+    <Compile Remove="AOI_Panel.xaml.cs" />
+    <Compile Remove="ChildWindow.xaml.cs" />
+    <Compile Remove="DownloadPanel.xaml.cs" />
     <Compile Remove="Interactivity.cs" />
     <Compile Remove="IReadOnlyList.cs" />
+    <Compile Remove="OutputFormatWindow.xaml.cs" />
+    <Compile Remove="ProgressBarWindow.xaml.cs" />
     <Compile Remove="WMTS_Window.xaml.cs" />
   </ItemGroup>
 
@@ -37,6 +52,7 @@
     <None Remove="LandSurfaceReflectance_products.csv" />
     <None Remove="ProductList.csv" />
     <None Remove="QBasketDemo.zip" />
+    <None Remove="qLib.dll" />
     <None Remove="QSolutions.png" />
     <None Remove="QSolutions_small.png" />
     <None Remove="quartic-black.png" />
@@ -46,9 +62,15 @@
     <None Remove="quatricLogoOld.ico" />
     <None Remove="Quatric_thumbnail.jpg" />
     <None Remove="Quatric_thumbnail.png" />
+    <None Remove="qWPF_lib.dll" />
   </ItemGroup>
 
   <ItemGroup>
+    <Page Remove="AOI_Panel.xaml" />
+    <Page Remove="ChildWindow.xaml" />
+    <Page Remove="DownloadPanel.xaml" />
+    <Page Remove="OutputFormatWindow.xaml" />
+    <Page Remove="ProgressBarWindow.xaml" />
     <Page Remove="WMTS_Window.xaml" />
   </ItemGroup>
 
@@ -61,15 +83,6 @@
     <PackageReference Include="System.Globalization" Version="4.3.0" />
     <PackageReference Include="System.Threading.Tasks" Version="4.3.0" />
     <PackageReference Include="WindowsAPICodePack-Core" Version="1.1.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="qLib">
-      <HintPath>..\qLib\bin\Debug\netstandard2.0\qLib.dll</HintPath>
-    </Reference>
-    <Reference Include="qWPF_lib">
-      <HintPath>..\qWPF_lib\bin\Debug\netcoreapp3.1\qWPF_lib.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup>
@@ -92,7 +105,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Properties\PublishProfiles\FolderProfile.pubxml.user" />
+    <Folder Include="Properties\" />
   </ItemGroup>
 
 </Project>

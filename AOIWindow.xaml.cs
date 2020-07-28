@@ -1,4 +1,5 @@
 ﻿using Esri.ArcGISRuntime.Geometry;
+using Esri.ArcGISRuntime.Mapping;
 using Esri.ArcGISRuntime.Ogc;
 using Esri.ArcGISRuntime.Symbology;
 using Esri.ArcGISRuntime.UI;
@@ -8,6 +9,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+
 using static QBasket_demo.MainWindow;
 
 namespace QBasket_demo
@@ -19,12 +21,20 @@ namespace QBasket_demo
     {
         public PanelVariables panelVars = new PanelVariables();
         public WmtsTileMatrixSet tileMatixSet;
+        public ArcGISMapImageLayer baseLayer;
+        public List<WmsLayer> displayLayers;
+
         public AOIWindow()
         {
             InitializeComponent();
+
+            // Initialize variables
+            displayLayers = new List<WmsLayer>();
+            baseLayer = mainWin.baseImageLayer;
+
         }   // end initialize
 
-        // Dynamic Panel variables 
+        // Dynamic Panel variables
         public class PanelVariables
         {
             private List<string> _resolutionList = new List<string>();
@@ -51,6 +61,8 @@ namespace QBasket_demo
 
             // Create a new Confirm window
             mainWin.confirmItemsWin = new ConfirmItemsWin();
+            mainWin.confirmItemsWin.Top = mainWin.Top;
+            mainWin.confirmItemsWin.Left = mainWin.Left;
             mainWin.confirmItemsWin.ShowDialog();
             mainWin.confirmItemsWin.Activate();
         }   // end CheckoutBtn_Click
@@ -67,6 +79,10 @@ namespace QBasket_demo
         // Return button callback
         private void ReturnBtn_Click(object sender, RoutedEventArgs e)
         {
+            // Reset the map layers to layers in product list
+            ResetMapLayers();
+
+            // Reset main window draw buttons
             mainWin.AOISelect.IsEnabled = true;
 
             if (mainWin.confirmItemsWin != null)
@@ -81,7 +97,7 @@ namespace QBasket_demo
         }   // end ReturnBtn_Click
 
 
-        // Executed when any change is made to any Extent textbox
+        // Executed when any change is made to any Extent text box
         private void Extent_Changed(object sender, RoutedEventArgs e)
         {
             if (mainWin.haveSketch && mainWin.haveLayer)
@@ -142,6 +158,40 @@ namespace QBasket_demo
         }   // end RedrawAOI
 
 
+        // Reset operational layers to state before AOI window opened
+        private void ResetMapLayers()
+        {
+            WmsLayer showLayers = new WmsLayer(mainWin.selectedLayers);
+
+            // Add the layer(s) to the map.
+            mainWin.BasemapView.Map.OperationalLayers.Clear();
+            mainWin.BasemapView.Map.OperationalLayers.Add(baseLayer);
+            mainWin.BasemapView.Map.OperationalLayers.Add(showLayers);
+        }
+
+
+        // Preload display layers
+        public void getDisplayLayers()
+        {
+            if (displayLayers == null)
+                displayLayers = new List<WmsLayer>();
+            else
+                displayLayers.Clear();
+
+        // Create layers from selected layers
+            if (mainWin.selectedLayers != null)
+            {
+                for (int i = 0; i < mainWin.selectedLayers.Count; i++)
+                {
+                    List<WmsLayerInfo> layerList = new List<WmsLayerInfo>();
+                    layerList.Add(mainWin.selectedLayers[i]);
+                    WmsLayer showLayer = new WmsLayer(layerList);
+                    displayLayers.Add(showLayer);
+                }
+            }
+        }
+
+
         // Zoom Combo selection callback
         private void Zoom_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -163,7 +213,7 @@ namespace QBasket_demo
                     mainWin.ResetZoomLevels(ImageryTitle.SelectedIndex, "Jessie");
                 /*
              // Set the zoom level specific to image selected
-                mainWin.wmts.GetZoomRange(ImageryTitle.SelectedIndex, "Jessie", mainWin.wmts, 
+                mainWin.wmts.GetZoomRange(ImageryTitle.SelectedIndex, "Jessie", mainWin.wmts,
                                   mainWin.PIX_MIN, mainWin.PIX_MAX,
                                   double.Parse(MinLat.Text), double.Parse(MaxLat.Text),
                                   double.Parse(MinLon.Text), double.Parse(MaxLon.Text));
@@ -185,9 +235,12 @@ namespace QBasket_demo
                 zoomIdx = ZoomCombo.SelectedIndex;
                 if (zoomIdx < 0) zoomIdx = 1;
 
+                // Reset zoom index to correct wmts index
                 if (mainWin.wmts.layerTileSets != null && mainWin.wmts.layerTileSets.Count > 0)
                 {
-                    if (mainWin.wmts.layerTileSets[idx].resTypes != null && mainWin.wmts.layerTileSets[idx].resTypes.Count > 0)
+                    zoomIdx += mainWin.wmts.layerTileSets[idx].minZoom;
+                    if (mainWin.wmts.layerTileSets[idx].resTypes != null
+                        && mainWin.wmts.layerTileSets[idx].resTypes.Count > 0)
                     {
                         res = mainWin.wmts.layerTileSets[idx].resTypes[zoomIdx].resolution;
                         numLatPix = 10 * Convert.ToInt32(latDiff / res);
@@ -209,8 +262,20 @@ namespace QBasket_demo
 
         private void ImageryTitle_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (ImageryTitle.SelectedIndex > -1)
+            int idx;
+            idx = ImageryTitle.SelectedIndex;
+
+            if (idx > -1)
+            {
+                // hold a reference to layer selected
+                // reset the selected layer displayed w/basemap
+                mainWin.BasemapView.Map.OperationalLayers.Clear();
+                mainWin.BasemapView.Map.OperationalLayers.Add(mainWin.baseImageLayer);
+                mainWin.BasemapView.Map.OperationalLayers.Add(displayLayers[idx]);
+
+                // Reset Zoom levels for the new layer
                 mainWin.ResetZoomLevels(ImageryTitle.SelectedIndex, "Gilligan");
+            }
             /*
             mainWin.wmts.GetZoomRange(ImageryTitle.SelectedIndex, "Gilligan", mainWin.wmts,
                   mainWin.PIX_MIN, mainWin.PIX_MAX,
@@ -237,7 +302,7 @@ namespace QBasket_demo
                                         ZoomCombo.SelectedIndex, Date.Text, bbox);
             */
             CheckoutBtn.IsEnabled = true;
-            mainWin.MainCheckoutBtn.IsEnabled = true;
+            // mainWin.MainCheckoutBtn.IsEnabled = true;
 
         }   // end ItemSaveBtn_Click
 
@@ -245,8 +310,12 @@ namespace QBasket_demo
         // Overrides default window closing (Ctrl-F4, title bar close)
         private void QAOIWindow_Closing(object sender, CancelEventArgs e)
         {
-            Debug.WriteLine("Shutting down from AOI window");
             Application.Current.Shutdown();
         }   // end QAOIWindow_Closing
+
+        private void AOI_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }   // end  partial class AOIWindow
 }   // end namespace

@@ -8,6 +8,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using System.Windows.Threading;
+using static QBasket_demo.MainWindow;
+
 
 namespace QBasket_demo
 {
@@ -18,8 +20,10 @@ namespace QBasket_demo
         private string _appID = "mJXUsUntsC9ygMva";
         private string _redirectUrl = "urn:ietf:wg:oauth:2.0:oob";
         private ServerInfo _portalServerInfo;
+        private PortalUserContent _userContent;
         private ArcGISPortal _portal;
         private Credential _credential;
+        private CredentialRequestInfo _loginInfo;
 
         public string serviceUrl
         { get => _serviceUrl; set { _serviceUrl = value; } }
@@ -29,10 +33,16 @@ namespace QBasket_demo
         { get => _redirectUrl; set { _redirectUrl = value; } }
         public ServerInfo portalServerInfo
         { get => _portalServerInfo; set { _portalServerInfo = value; } }
+        public PortalUserContent userContent
+        { get => _userContent; set { _userContent = value; } }
         public ArcGISPortal portal
         { get => _portal; set { _portal = value; } }
         public Credential credential
         { get => _credential; set { _credential = value; } }
+        public CredentialRequestInfo loginInfo
+        { get => _loginInfo; set { _loginInfo = value; } }
+
+
 
         public async void GetUserPortal()
         {
@@ -41,12 +51,8 @@ namespace QBasket_demo
             OAuthPortal();
 
             // Challenge the user for portal credentials (OAuth credential request for arcgis.com)
-            Debug.WriteLine("In GetUserPortal - Setting Credentials");
-            Debug.WriteLine("In GetUserPortal - Service URL = " + serviceUrl);
-
             CredentialRequestInfo loginInfo = new CredentialRequestInfo
             {
-
                 // Use the OAuth implicit grant flow
                 GenerateTokenOptions = new GenerateTokenOptions
                 {
@@ -56,29 +62,65 @@ namespace QBasket_demo
                 // Indicate the url (portal) to authenticate with (ArcGIS Online)
                 ServiceUri = new Uri(serviceUrl)
             };
-
+            /*
             try
             {
-                Debug.WriteLine("In GetUserPortal - Getting AM");
-                // Get a reference to the (singleton) AuthenticationManager for the app
+                // Get a reference to the AuthenticationManager
                 AuthenticationManager thisAM = AuthenticationManager.Current;
-
+                await AuthenticationManager.Current.RemoveAndRevokeAllCredentialsAsync();
                 // Call GetCredentialAsync on the AuthenticationManager to invoke the challenge handler
-                Debug.WriteLine("In GetUserPortal - getting credentials");
                 await thisAM.GetCredentialAsync(loginInfo, false);
-                Debug.WriteLine("In GetUserPortal - got credentials");
-                Debug.WriteLine("In GetUserPortal - login service uri" + loginInfo.ServiceUri);
             }
             catch (OperationCanceledException)
             {
                 // user canceled the login
-                throw new Exception("Portal log in was canceled.");
+                MessageBox.Show("Portal log in was canceled.", "ArcGIS Login Canceled");
+                return;
             }
+            */
+            try
+            {
+                // Get a reference to the AuthenticationManager
+                Debug.WriteLine("Getting Authentication Manager");
+                AuthenticationManager thisAM = AuthenticationManager.Current;
+                await AuthenticationManager.Current.RemoveAndRevokeAllCredentialsAsync();
 
-            // Get the ArcGIS Online portal (will use credential from login above)
-            Debug.WriteLine("in GetUserPortal - creating the portal");
-            portal = await ArcGISPortal.CreateAsync();
-            Debug.WriteLine("in GetUserPortal - completed creating the portal");
+                // Call GetCredentialAsync on the AuthenticationManager to invoke the challenge handler
+                Debug.WriteLine("Getting Credentials Async call");
+                try
+                {
+                    await thisAM.GetCredentialAsync(loginInfo, false);
+                }
+                catch (OperationCanceledException)
+                {
+                    // user canceled the login
+                    MessageBox.Show("Portal log in was canceled.", "ArcGIS Online Login Canceled");
+                    Debug.WriteLine("revoking authentication\n");
+
+                    await AuthenticationManager.Current.RemoveAndRevokeAllCredentialsAsync();
+                    return;
+                }
+                Debug.WriteLine("back from getting credentials");
+
+                // Create the portal
+                // Get the ArcGIS Online portal (will use credential from login above)
+                Debug.WriteLine("creating the portal");
+                portal = await ArcGISPortal.CreateAsync();
+
+                // Get the user's content (items in the root folder and a collection of sub-folders)
+                Debug.WriteLine("getting User content");
+
+                userContent = await portal.User.GetContentAsync();
+            }
+            catch (Exception ex)
+            {
+                // user canceled the login
+                MessageBox.Show("Portal Login exception: " + ex.Message, "ArcGIS Online Login Exception");
+                Debug.WriteLine("revoking authentication");
+
+                await AuthenticationManager.Current.RemoveAndRevokeAllCredentialsAsync();
+                return;
+            }
         }
 
 
@@ -86,6 +128,7 @@ namespace QBasket_demo
         public void OAuthPortal()
         {
             // Register the server information with the AuthenticationManager
+            Debug.WriteLine("OAuthPortal - Setting portal server info");
             ServerInfo portalServerInfo = new ServerInfo
             {
                 ServerUri = new Uri(serviceUrl),
@@ -100,16 +143,22 @@ namespace QBasket_demo
             };
 
             // Get a reference to the (singleton) AuthenticationManager for the app
+            Debug.WriteLine("OauthPortal - Getting current authentication manager");
             AuthenticationManager thisAM = AuthenticationManager.Current;
 
             // Register the server information
+            Debug.WriteLine("OAuthPortal - Registering portal");
             thisAM.RegisterServer(portalServerInfo);
 
-            // Use the OAuthAuthorize class in this project to create a new web view that contains the OAuth challenge handler.
+            // Use the OAuthAuthorize to create a
+            //  web view that contains the OAuth challenge handler.
+            Debug.WriteLine("OAuthPortal - Setting AUthorization handler");
             thisAM.OAuthAuthorizeHandler = new OAuthAuthorize();
 
             // Create a new ChallengeHandler that uses a method in this class to challenge for credentials
+            Debug.WriteLine("Creating new challenge handler");
             thisAM.ChallengeHandler = new ChallengeHandler(CreateCredentialAsync);
+            Debug.WriteLine("leaving OAuthPortal");
         }
 
 
@@ -122,16 +171,12 @@ namespace QBasket_demo
         public async Task<Credential> CreateCredentialAsync(CredentialRequestInfo info)
         {
             // Challenge the user for OAuth credentials
-            credential = null;
-            try
-            {
+            Debug.WriteLine("In createCredentialAsync");
+            //credential = null;
+
+                Debug.WriteLine("In CreateCredentialAsync - creating credential \n service url = " + info.ServiceUri);
                 credential = await AuthenticationManager.Current.GenerateCredentialAsync(info.ServiceUri);
-            }
-            catch (Exception)
-            {
-                // Exception will be reported in calling function
-                throw;
-            }
+
             return credential;
         }
         #endregion
@@ -152,7 +197,7 @@ namespace QBasket_demo
         // URL that handles the OAuth request
         private string _authorizeUrl;
 
-        // Function to handle authorization requests, takes the URIs for the secured service, 
+        // Function to handle authorization requests, takes the URIs for the secured service,
         // the authorization endpoint, and the redirect URI
         public Task<IDictionary<string, string>> AuthorizeAsync(Uri serviceUri, Uri authorizeUri, Uri callbackUri)
         {
@@ -194,11 +239,11 @@ namespace QBasket_demo
             // Create a WebBrowser control to display the authorize page
             WebBrowser webBrowser = new WebBrowser();
 
-            // Handle the navigation event for the browser to check 
+            // Handle the navigation event for the browser to check
             // for a response to the redirect URL
             webBrowser.Navigating += WebBrowserOnNavigating;
 
-            // Display the web browser in a new window 
+            // Display the web browser in a new window
             _window = new Window
             {
                 Content = webBrowser,
@@ -239,12 +284,12 @@ namespace QBasket_demo
             // window without logging in
             if (_tcs != null && !_tcs.Task.IsCompleted)
             {
-                // Set the task completion source exception to indicate a 
+                // Set the task completion source exception to indicate a
                 // canceled operation
                 _tcs.SetException(new OperationCanceledException());
             }
 
-            // Set the task completion source and window to null to 
+            // Set the task completion source and window to null to
             // indicate the authorization process is complete
             _tcs = null;
             _window = null;
@@ -276,7 +321,7 @@ namespace QBasket_demo
             if (isRedirected)
             {
                 // If the web browser is redirected to the callbackUrl:
-                //    -close the window 
+                //    -close the window
                 //    -decode the parameters (returned as fragments or query)
                 //    -return these parameters as result of the Task
                 e.Cancel = true;
@@ -297,7 +342,7 @@ namespace QBasket_demo
 
 
         /// <summary>
-        /// Create a dictionary of key value pairs returned in 
+        /// Create a dictionary of key value pairs returned in
         /// the OAuth authorization response URI query string
         /// </summary>
         /// <param name="uri"></param>

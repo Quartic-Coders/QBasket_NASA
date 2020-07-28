@@ -12,15 +12,22 @@
         Title="Q Basket"
         DataContext="MainWindow"
         Closing="QBasketWindow_Closing"
-       
+
         Background="#DFEBF4"
         FontFamily="Montserrat"
         FontSize="10"
-        
+
         WindowStyle="SingleBorderWindow"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
         SizeToContent="WidthAndHeight">
+
+    <Window.Style>
+        <Style TargetType="{x:Type Window}">
+            <Setter Property="WindowState" Value="Normal" />
+            <Setter Property="WindowStyle" Value="SingleBorderWindow" />
+        </Style>
+    </Window.Style>
 
     <!-- Margin : L T (R B) -->
     <Window.Resources>
@@ -61,9 +68,9 @@
             <Setter Property="BorderThickness"
                     Value="1" />
             <Setter Property="Height"
-                    Value="15" />
+                    Value="16" />
             <Setter Property="Width"
-                    Value="15" />
+                    Value="16" />
         </Style>
         <Style x:Key="BlueBorder"
                TargetType="Border">
@@ -165,10 +172,10 @@
     <!-- Base grid -->
     <Grid x:Name="BaseGrid"
           Background="LightBlue"
-          Width="Auto"  MaxWidth="1000"
+          Width="Auto"  MaxWidth="1050"
           Height="Auto" MaxHeight="550">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" MaxWidth="300" />
+            <ColumnDefinition Width="Auto" MaxWidth="350" />
             <ColumnDefinition Width="Auto" MaxWidth="700" />
         </Grid.ColumnDefinitions>
 
@@ -176,10 +183,9 @@
             <RowDefinition Height="Auto" MaxHeight="300" />
             <RowDefinition Height="Auto" MaxHeight="200" />
             <RowDefinition Height="Auto" MaxHeight="50" />
-            <RowDefinition Height="Auto" MaxHeight="50" />
         </Grid.RowDefinitions>
 
-        <!-- Basemap -->
+        <!-- Row 0 Col 1 - Basemap -->
         <esri:MapView x:Name="BasemapView"
                       Grid.Row="0"
                       Grid.Column="1"
@@ -189,42 +195,47 @@
                       MaxWidth="696"
                       MaxHeight="496"
                       Map="{Binding Map,
-                                    Source={StaticResource MapViewModel}}" />
+                      Source={StaticResource MapViewModel}}" />
 
-        <!-- Product Panel -->
-        <Border Style="{StaticResource BlueBorder}" 
+        <!-- Row 0 Col 0 -Product Panel -->
+        <Border Style="{StaticResource BlueBorder}"
                 Grid.Row="0"
                 Grid.Column="0"
                 Width="Auto"
                 Height="Auto"
                 MinHeight="290"
-                MaxWidth="300"
+                MinWidth="340"
+                MaxWidth="350"
                 MaxHeight="300"
-                VerticalAlignment="Top"
+                VerticalAlignment="Center"
                 HorizontalAlignment="Stretch">
 
             <StackPanel x:Name="ProductPanel"
+                        CanVerticallyScroll="True"
+                        CanHorizontallyScroll="True"
                         Grid.Row="0"
                         Grid.Column="0"
                         Width="Auto"
                         Height="Auto"
-                        MaxWidth="300"
+                        MaxWidth="350"
                         MaxHeight="300">
 
                 <Label x:Name="ProductLabel"
                        Style="{StaticResource TitleLabel}"
                        FontSize="11"
                        Width="Auto"
-                       Height="25"
-                       MaxWidth="300"
+                       Height="Auto"
+                       MaxWidth="350"
+                       MinHeight="25"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Stretch" />
 
-                <Grid x:Name="TreeviewGrid"
+                <!--
+                <Grid x:Name="ProductGrid"
                       Width="Auto"
-                      Height="275"
+                      Height="Auto"
                       MaxWidth="300"
-                      MinHeight="275"
+                      MinHeight="200"
                       HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="300"
@@ -232,55 +243,53 @@
                     </Grid.ColumnDefinitions>
 
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="275"
+                        <RowDefinition Height="Auto"
                                        MaxHeight="275" />
                     </Grid.RowDefinitions>
+                -->
+                <StackPanel Orientation="Vertical"
+                            CanHorizontallyScroll="True"
+                            CanVerticallyScroll="True">
+                    <ListBox  x:Name="ProductList"
+                          Width="Auto"
+                          Height="275"
+                          MaxWidth="350"
+                          MinHeight="200"
+                          Grid.Row="0"
+                          Grid.Column="0"
+                          HorizontalAlignment="Stretch">
 
-                    <TreeView Name="ProductTreeView"
-                              Grid.Column="0"
-                              Grid.Row="0">
-
-                        <TreeView.ItemTemplate>
-                            <HierarchicalDataTemplate
-                                DataType="{x:Type wmsServiceCatalog:LayerInfoVM}"
-                                ItemsSource="{Binding Children}">
-
-                                <StackPanel Orientation="Horizontal"
-                                            CanVerticallyScroll="True"
-                                            CanHorizontallyScroll="True">
-                                    <CheckBox IsChecked="{Binding IsEnabled,
-                                              Mode=TwoWay}"
-                                              Style="{StaticResource BlueCB}"
-                                              VerticalAlignment="Center"
-                                              Margin="5"
-                                              Checked="ToggleButton_OnChecked"
-                                              Unchecked="ToggleButton_OnChecked" />
-                                    <TextBlock Text="{Binding}"
-                                               VerticalAlignment="Center" />
-                                </StackPanel>
-                            </HierarchicalDataTemplate>
-                        </TreeView.ItemTemplate>
-
-                        <TreeView.ItemContainerStyle>
-                            <Style TargetType="{x:Type TreeViewItem}">
-                                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
-                                    Value="Auto" />
-                                <Setter Property="ScrollViewer.VerticalScrollBarVisibility"
-                                     Value="Auto" />
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListBoxItem}">
+                                <Setter Property="IsSelected"
+                                        Value="{Binding IsEnabled, Mode=OneWay}"/>
+                                <Setter Property="VerticalContentAlignment"
+                                        Value="Center"/>
                             </Style>
-                        </TreeView.ItemContainerStyle>
-                    </TreeView>
-                </Grid>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+
+                            <DataTemplate>
+                                <CheckBox Content="{Binding Title}"
+                                          IsChecked="{Binding Selected}"
+                                          VerticalContentAlignment="Center"
+                                          Margin="2"
+                                          Checked="ToggleButton_OnChecked"
+                                          Unchecked="ToggleButton_OnChecked" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
             </StackPanel>
         </Border>
 
-        <!-- Filter Panel -->
+        <!-- Row 1 Col 0 Filter Panel -->
         <Border Style="{StaticResource BlueBorder}"
                 Grid.Row="1"
                 Grid.Column="0"
                 Width="Auto"
                 Height="200"
-                MaxWidth="300"
+                MaxWidth="350"
                 MaxHeight="250"
                 VerticalAlignment="Top"
                 HorizontalAlignment="Stretch">
@@ -293,7 +302,8 @@
                 <!-- AOI Draw/Select Buttons -->
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="200" />
+                        <ColumnDefinition Width="150"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
@@ -302,20 +312,20 @@
                     </Grid.RowDefinitions>
                     <Label Style="{StaticResource PanelLabel}"
                            Grid.Column="0"
-                           Grid.Row="0">
+                           Grid.Row="0" Grid.ColumnSpan="2">
                         AREA OF INTEREST
                     </Label>
                     <StackPanel Orientation="Horizontal"
                                 HorizontalAlignment="Center"
                                 Grid.Row="1"
                                 Grid.Column="0"
-                                Margin="0,5,0,0">
+                                Margin="0,5,0,0" Grid.ColumnSpan="2">
 
                         <Button x:Name="AOIDraw"
                                 Content="Draw"
                                 Height="20"
                                 Width="60"
-                                Margin="8,0,0,0"
+                                Margin="10,5"
                                 HorizontalAlignment="Left"
                                 IsEnabled="True"
                                 ToolTipService.PlacementRectangle="10,10,50,50"
@@ -328,20 +338,19 @@
                                 Content="Select"
                                 Height="20"
                                 Width="60"
-                                Margin="10,0,0,0"
+                                Margin="10,5"
                                 ToolTipService.PlacementRectangle="10,10,50,50"
                                 ToolTipService.Placement="Left"
                                 ToolTipService.HasDropShadow="True"
                                 ToolTipService.ToolTip="View tiled imagery for the current AOI selection, for all selected layers"
                                 Click=" SelectButtonClick"
                                 IsEnabled="False" />
-                        <!-- ="{Binding CompleteCommand}" />-->
 
                         <Button x:Name="AOIClear"
                                 Content="Clear"
                                 Height="20"
                                 Width="60"
-                                Margin="10,0,0,0"
+                                Margin="10,5"
                                 HorizontalAlignment="Center"
                                 IsEnabled="False"
                                 ToolTipService.PlacementRectangle="10,10,50,50"
@@ -354,185 +363,117 @@
                                 Content="Back to Map"
                                 Height="20"
                                 Width="60"
-                                Margin="10,0,0,0"
+                                Margin="10,5"
                                 ToolTipService.PlacementRectangle="10,10,50,50"
                                 ToolTipService.Placement="Left"
                                 ToolTipService.HasDropShadow="True"
                                 ToolTipService.ToolTip="Erase current drawing and return control to map"
-                                Click="CancelButtonClick"/>
+                                Click="Back2MapButtonClick"/>
                         <!--  Command="{Binding CancelCommand}" /> -->
                     </StackPanel>
                 </Grid>
 
                 <!-- Start and End dates -->
-                <Label Style="{StaticResource PanelLabel}"
-                       Margin="0,10,0,0">
-                    DATE
-                </Label>
-                <Grid Margin="0,0,0,15">
+                <Grid HorizontalAlignment="Center"
+                      Margin="0,10">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="125" />
+                        <ColumnDefinition Width="100" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <Label Style="{StaticResource ElementLabel}" 
-                           Grid.Row="0"
-                           Grid.Column="0"
-                           Margin="25,0,0,0"
-                           VerticalAlignment="Center"
-                           HorizontalContentAlignment="Right">
-                        mm/dd/yyy
-                    </Label>
+                    <StackPanel Orientation="Vertical"
+                                Grid.Column="0">
+                        <Label Style="{StaticResource PanelLabel}"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"
+                               Content="DATE"/>
+
+                        <Label Style="{StaticResource ElementLabel}"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"
+                               Content="mm/dd/yyyy"/>
+
+                    </StackPanel>
+
                     <DatePicker x:Name="startDate_DP"
-                                Grid.Row="0"
                                 Grid.Column="1"
+                                VerticalAlignment="Center"
                                 SelectedDate="01/01/2020"
                                 DisplayDateStart="01/01/2010"
-                                DisplayDateEnd ="02/15/2020"
                                 SelectedDateChanged="SelectedDateChanged">
                     </DatePicker>
-
-                    <Button x:Name="UpdateDatesBtn"
-                            Content="Update Dates" 
-                            ToolTipService.PlacementRectangle="10,10,50,50"
-                            ToolTipService.Placement="Left"
-                            ToolTipService.HasDropShadow="True"
-                            ToolTipService.ToolTip="Reload the layers with new date range"
-                            Margin="10,0"
-                            Width =" 70" 
-                            Height ="20" 
-                            Grid.Column="2"
-                            Grid.Row="0"
-                            Grid.RowSpan="2"
-                            IsEnabled="False"
-                            Click="UpdateDatesBtn_Click"/>
-
-                    <DatePicker x:Name="endDate_DP"
-                                Grid.Row="1"
-                                Grid.Column="1"
-                                SelectedDate="01/31/2020"
-                                DisplayDateStart="01/01/2010"
-                                DisplayDateEnd ="02/15/2020"
-                                SelectedDateChanged="SelectedDateChanged">
-                    </DatePicker>
-
-
-                    <!-- option to reload loayers with new dates -->
                 </Grid>
 
-                <StackPanel Orientation="Horizontal"
+
+                <Button x:Name="QuitBtn"
+                            Content="Exit"
                             Grid.Column="0"
-                            Grid.Row="2" 
-                            HorizontalAlignment="Center">
-                    <Button x:Name="MainCheckoutBtn"
-                            Content="Checkout" 
-                            Margin="10,0"
-                            Width =" 70" 
-                            Height ="20"
-                            IsEnabled="False"
-                            ToolTipService.PlacementRectangle="10,10,50,50"
-                            ToolTipService.Placement="Left"
-                            ToolTipService.HasDropShadow="True"
-                            ToolTipService.ToolTip="Verify and download selections"
-                            Click="CheckoutBtn_Click">
-                    </Button>
-                    <Button x:Name="QuitBtn"
-                            Content="Quit" 
-                            Margin="10,0"
-                            Width =" 70" 
+                            Grid.Row="2"
+                            HorizontalAlignment="Right"
+                            Margin="0,5,18.25,0"
+                            Width =" 60"
                             Height ="20"
                             ToolTipService.PlacementRectangle="10,10,50,50"
                             ToolTipService.Placement="Left"
                             ToolTipService.HasDropShadow="True"
                             ToolTipService.ToolTip="Quit QBasket Demo"
                             Click="QuitBtn_Click">
-                    </Button>
-                </StackPanel>
+                </Button>
             </StackPanel>
         </Border>
 
-        <!-- Download/logo -->
-
+        <!-- Row 2 Col 0 -Download/logo -->
         <Border Style="{StaticResource LightBlueBorder}"
                 Grid.Row="2"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
                 Height="50"
-                Width="1000"
-                VerticalAlignment="Top"
-                HorizontalAlignment="Left">
-            <Grid Grid.Row="2"
-              Grid.Column="0">
+                Width="1050">
 
+            <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="950"/>
                 </Grid.ColumnDefinitions>
+
                 <Image Source="QSolutions_small.png"
-                   Margin="5,5,5,10"
-                   Visibility="Visible"
-                   Grid.Row="0"
-                   Grid.Column="0"
-                   Height="24"                  
-                   HorizontalAlignment="Right"
-                   VerticalAlignment="Bottom" />
+                       Visibility="Visible"
+                       Grid.Column="0"
+                       Height="30"
+                       Width="75"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"/>
 
-                <StackPanel x:Name="DownloadPanel"
-                        Visibility="Collapsed"
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        Height="46"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Left"
-                        Orientation="Horizontal">
+                <Grid x:Name="DownloadPanel"
+                      Grid.Column="1"
+                      Visibility="Collapsed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="250"/>
+                        <ColumnDefinition Width="700"/>
+                    </Grid.ColumnDefinitions>
 
-                    <Grid x:Name="DownloadGrid"
-                      Width="Auto"
-                      Height="Auto"
-                      MaxWidth="1000"
-                      MaxHeight="50">
+                    <!-- Downloading label -->
+                    <Label Content="Processing"
+                           FontSize="14"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center"
+                           Style="{StaticResource PanelLabel}"/>
 
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="300"
-                                          MaxWidth="300" />
-                            <ColumnDefinition Width="Auto"
-                                          MaxWidth="700" />
-                        </Grid.ColumnDefinitions>
-
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height ="Auto"
-                                       MaxHeight="50" />
-                        </Grid.RowDefinitions>
-
-                        <!-- Downloading label -->
-                        <Label Content="Downloading Data "
-                          Grid.Row="0"
-                          Grid.Column="0"
-                          VerticalAlignment="Bottom"
-                          HorizontalAlignment="Center"
-                          FontWeight="SemiBold"
-                          FontSize="14"
-                          Margin="0,10,0,0"
-                          Style="{StaticResource PanelLabel}"/>
-
-                        <!-- Downloading progress bar -->
-                        <ProgressBar x:Name="DownloadPB"
-                                 Grid.Row="0"
+                    <!-- Downloading progress bar -->
+                    <ProgressBar x:Name="DownloadPB"
+                                 Grid.Column="1"
                                  IsIndeterminate="True"
                                  Foreground="SteelBlue"
-                                 VerticalAlignment="Top"
-                                 HorizontalAlignment="Left"
-                                 Width="649"
-                                 Height="20" 
-                                 Margin="241,17,0,0" Grid.ColumnSpan="2"/>
-                    </Grid>
+                                 VerticalAlignment="Center"
+                                 HorizontalAlignment="Center"
+                                 Height="20"
+                                 Width="600"
+                                 Margin="0"/>
 
-                </StackPanel>
+                </Grid>
             </Grid>
         </Border>
 
