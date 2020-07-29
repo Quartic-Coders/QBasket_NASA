@@ -533,7 +533,7 @@ namespace QBasket_demo
         public void ResetZoomLevels(int idx, string flag)
         {
             int i;
-            flag = "Select Zoom Level";
+            flag = "Select Resolution";
 
             // Calculate range
             double latDiff = Math.Abs(Convert.ToDouble(aoiWin.MaxLat.Text) -
@@ -547,11 +547,13 @@ namespace QBasket_demo
                 if (aoiWin.ZoomCombo.SelectedIndex < 0)
                     aoiWin.ZoomCombo.SelectedIndex = 1;
 
-                aoiWin.panelVars.resolutionList = new List<string>();
+                
 
                 // Set zoom level list for given index
+                /*
                 for (i = 0; i < wmts.layerTileSets[idx].resTypes.Count; i++)
                     aoiWin.panelVars.resolutionList.Add(wmts.layerTileSets[idx].resTypes[i].id);
+                */
 
                 // Get the  max zoom level for this tile set
                 int maxIdx = -1;
@@ -591,13 +593,25 @@ namespace QBasket_demo
             }   // end find min and max zoom
 
             // Set the resolutionList
+            aoiWin.panelVars.resolutionList = new List<string>();
+            /*
             if (aoiWin.panelVars.resolutionList != null)
                 aoiWin.panelVars.resolutionList.Clear();
             else
                 aoiWin.panelVars.resolutionList = new List<string>();
-
+            */
+            double resInMeters;
             for (i = wmts.layerTileSets[idx].minZoom; i <= wmts.layerTileSets[idx].maxZoom; i++)
-                aoiWin.panelVars.resolutionList.Add(i.ToString());
+            {
+                resInMeters = 128000.0 / (Math.Pow(2.0, i));    // ?? - 128000 = tilesize*maxTileNum)
+                string resStr;
+                Debug.WriteLine("Zoom = " + i + "  Res in Meters = " + resInMeters.ToString("F2"));
+                if (resInMeters > 1000.0)
+                    resStr = (resInMeters/1000.0).ToString("f0") + " km/pixel";
+                else
+                    resStr = resInMeters.ToString("f0") + " m/pixel";
+                aoiWin.panelVars.resolutionList.Add(resStr);
+            }
             aoiWin.panelVars.resolutionList[0] = flag;
             aoiWin.ZoomCombo.ItemsSource = aoiWin.panelVars.resolutionList;
             aoiWin.ZoomCombo.SelectedIndex = 0;

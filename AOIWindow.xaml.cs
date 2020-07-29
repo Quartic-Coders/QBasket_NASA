@@ -233,7 +233,7 @@ namespace QBasket_demo
                 if (idx < 0) idx = 0;
 
                 zoomIdx = ZoomCombo.SelectedIndex;
-                if (zoomIdx < 0) zoomIdx = 1;
+                if (zoomIdx <= 0) zoomIdx = 1;
 
                 // Reset zoom index to correct wmts index
                 if (mainWin.wmts.layerTileSets != null && mainWin.wmts.layerTileSets.Count > 0)
@@ -245,8 +245,8 @@ namespace QBasket_demo
                         res = mainWin.wmts.layerTileSets[idx].resTypes[zoomIdx].resolution;
                         numLatPix = 10 * Convert.ToInt32(latDiff / res);
                         numLonPix = 10 * Convert.ToInt32(lonDiff / res);
-                        if (numLatPix <= 10) numLatPix = 0;
-                        if (numLonPix <= 10) numLonPix = 0;
+                        if (numLatPix < 0) numLatPix = 0;
+                        if (numLonPix < 0) numLonPix = 0;
                         str = numLatPix.ToString() + " px x " + numLonPix.ToString() + " px";
                         PixelSize.Text = str;
 

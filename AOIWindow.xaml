@@ -447,7 +447,7 @@
                 Grid.ColumnSpan="2"
                 Width="70"
                 Height="25"
-                Margin="5,0,46.75,0"
+                Margin="5,40,46.75,0"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"
                 ToolTipService.PlacementRectangle="10,10,50,50"

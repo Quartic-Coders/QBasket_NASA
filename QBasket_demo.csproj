@@ -44,6 +44,7 @@
     <Compile Remove="IReadOnlyList.cs" />
     <Compile Remove="OutputFormatWindow.xaml.cs" />
     <Compile Remove="ProgressBarWindow.xaml.cs" />
+    <Compile Remove="StartUpWindow.xaml.cs" />
     <Compile Remove="WMTS_Window.xaml.cs" />
   </ItemGroup>
 
@@ -71,6 +72,7 @@
     <Page Remove="DownloadPanel.xaml" />
     <Page Remove="OutputFormatWindow.xaml" />
     <Page Remove="ProgressBarWindow.xaml" />
+    <Page Remove="StartUpWindow.xaml" />
     <Page Remove="WMTS_Window.xaml" />
   </ItemGroup>
 

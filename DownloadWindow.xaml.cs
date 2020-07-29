@@ -514,6 +514,7 @@ namespace QBasket_demo
 
             // PANEL - reset to show correct window
             mainWin.Activate();
+            mainWin.Topmost = true;
             mainWin.aoiWin.CheckoutBtn.IsEnabled = false;
 
             if (mainWin.aoiWin != null)
@@ -522,9 +523,11 @@ namespace QBasket_demo
                 {
                     mainWin.aoiWin.Activate();
                     mainWin.aoiWin.ShowDialog();
+                    mainWin.aoiWin.Topmost = true;
                 }
             }
             mainWin.confirmItemsWin.Close();
+            mainWin.DownloadPanel.Visibility = Visibility.Collapsed;
 
         }   // end Worker_RunWorkerCompleted
     } // end DownloadWindow class
