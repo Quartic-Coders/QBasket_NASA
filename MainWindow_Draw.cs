@@ -194,6 +194,12 @@ namespace QBasket_demo
 
                         // Update Geo Coords in aoi window
                         AOIEnvelope = geometry.Extent;
+                        if(AOIEnvelope == null)
+                        {
+                            MapPoint minPt = new MapPoint(-180,-90);
+                            MapPoint maxPt = new MapPoint(180, 90);
+                            AOIEnvelope = new Envelope(minPt, maxPt);
+                        }
                         aoiWin.MinLat.Text = AOIEnvelope.YMin.ToString("F4");
                         aoiWin.MaxLat.Text = AOIEnvelope.YMax.ToString("F4");
                         aoiWin.MinLon.Text = AOIEnvelope.XMin.ToString("F4");
@@ -547,7 +553,7 @@ namespace QBasket_demo
                 if (aoiWin.ZoomCombo.SelectedIndex < 0)
                     aoiWin.ZoomCombo.SelectedIndex = 1;
 
-                
+
 
                 // Set zoom level list for given index
                 /*

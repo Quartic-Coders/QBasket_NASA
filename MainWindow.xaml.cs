@@ -48,7 +48,7 @@ namespace QBasket_demo
         public static MainWindow mainWin;
         public AOIWindow aoiWin;
         public ConfirmItemsWin confirmItemsWin;
-        
+
         // Flags to simplify element state checking
         public bool haveSketch = false;
         public bool haveLayer = false;
@@ -186,6 +186,10 @@ namespace QBasket_demo
 
             // Set and parse dates
             DateTime date = startDate_DP.SelectedDate.Value;
+            if (date == null)
+            {
+                date = DateTime.Now;
+            }
             String year = date.Year.ToString();
             String month = date.Month.ToString();
             String day = date.Day.ToString();
@@ -283,7 +287,7 @@ namespace QBasket_demo
             sorted = temp.OrderBy(o => o.Info.Title).ToList();
 
         }   // end Sort_NASA_GIBS
-        #endregion 
+        #endregion
     }   // end MainWindow partial class
 
 
