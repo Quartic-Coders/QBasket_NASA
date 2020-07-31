@@ -553,8 +553,6 @@ namespace QBasket_demo
                 if (aoiWin.ZoomCombo.SelectedIndex < 0)
                     aoiWin.ZoomCombo.SelectedIndex = 1;
 
-
-
                 // Set zoom level list for given index
                 /*
                 for (i = 0; i < wmts.layerTileSets[idx].resTypes.Count; i++)
